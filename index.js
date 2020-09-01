@@ -1,10 +1,10 @@
 const { ApolloServer, PubSub } = require('apollo-server');
 const mongoose = require('mongoose');
-const MONGODBPATH = "mongodb+srv://r_wethey:GxAL5prPMc5AgY7d@cluster0.rwlnd.mongodb.net/genericBackend?retryWrites=true&w=majority";
+const { MONGODBPATH } = require('./config');
 const typeDefs = require('./GraphQL/typeDefs');
 const resolvers = require('./GraphQL/resolvers');
 
-const pubsub = new PubSub();
+const PORT = process.env.PORT || 3001;
 
 const server = new ApolloServer({
   typeDefs,
@@ -12,11 +12,10 @@ const server = new ApolloServer({
   context: ({ req }) => ({ req })
 });
 
-
 mongoose.connect(MONGODBPATH, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => {
     console.log('MongoDB Connected');
-    return server.listen({port: 3001})
+    return server.listen({port: PORT})
   })
   .then(res => {
     console.log(`Server Running @ ${res.url}`)
